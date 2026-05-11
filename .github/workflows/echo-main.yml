@@ -1,13 +1,37 @@
-name: Echo on Main
+name: Deploy GitHub Pages
 
 on:
   push:
-    branches: [main]
+    branches: [main] #Nur bei Push auf Main
   workflow_dispatch:
 
+permissions:
+  contents: read #Darf den Code lesen
+  pages: write #Ohne kann der Workflow nicht auf pages deployen
+  id-token: write #Das ist eine Art Authentifizierungs Beweis für GitHub, damit der Workflow wirklich von dir oder deinem Repo kommt und nicht fake ist.
+
+concurrency:
+  group: pages
+  cancel-in-progress: true #Falls noch einer läuft, wird der laufende abgebrochen und der neue vorgezogen
+
 jobs:
-  test:
+  deploy:
     runs-on: ubuntu-latest
-    steps:
-      - name: Echo
-        run: echo "Workflow auf main läuft erfolgreich"
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps: #Vorgefertigte Actions 
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+      
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
