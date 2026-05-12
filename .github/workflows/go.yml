@@ -19,7 +19,7 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v4
       with:
-        go-version-file: [go.mod] (https://_vscodecontentpref_/2) #Version von go.mod nutzen
+        go-version-file: app/go.mod # Version von go.mod nutzen
 
     - name: Build
       run: go build -v ./...
