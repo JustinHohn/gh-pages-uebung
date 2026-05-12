@@ -1,7 +1,10 @@
 package main
 
-import "fmt"
+import (
+	"net/http"
+)
 
 func main() {
-	fmt.Println("Hello, World!")
+	http.Handle("/", http.FileServer(http.Dir("../pages"))) // Pfad pages für html und css
+	http.ListenAndServe(":8080", nil)                       // Webapp
 }
